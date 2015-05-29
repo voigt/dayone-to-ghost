@@ -12,11 +12,12 @@ class DayoneToGhost(object):
         self.ghost_tags = []
         self.posts_tags = []
 
-        self.get_posts()
-
-    def get_posts(self):
-
         pathToJournalDayone = sys.argv[1]
+
+        self.get_posts(pathToJournalDayone)
+
+
+    def get_posts(self, pathToJournalDayone):
 
         if os.path.isdir(pathToJournalDayone):
             print "DayOne path: " + pathToJournalDayone
@@ -34,6 +35,7 @@ class DayoneToGhost(object):
         ghost_posts = []
         dayone_tags = []
         post_id = 0
+        image_count = 0
 
         entries = glob.glob(entries_dir + "*.doentry")
         
@@ -66,9 +68,7 @@ class DayoneToGhost(object):
 
                 # new path to Photo
                 ghost_img = "/" + ghost_img_dir + image_name
-
-
-            
+                image_count += 1
 
             markdown = pl["Entry Text"].encode('ascii', 'xmlcharrefreplace')
             html = pandoc.convert(markdown, 'html', format='md').encode('ascii', 'xmlcharrefreplace')
@@ -90,13 +90,6 @@ class DayoneToGhost(object):
             # Convert timestamp to string
             timestamp = time.strftime("%Y-%m-%dT%H:%M:%S", timestamp)
 
-            # if post['slug']:
-            #     slug = post['slug']
-            # else:
-            #     title_slug = title.lower().split(' ')
-            #     slug = '{}-{}'.format('-'.join(title_slug), post_id)
-
-
 
             temp_post = {
                 "id": post_id,
@@ -105,7 +98,7 @@ class DayoneToGhost(object):
                 "markdown": markdown,
                 "html": html,
                 "image": ghost_img,
-                "featured": 0,#starred?
+                "featured": 0,
                 "page": 0,
                 "status": "published",
                 "language": "en_US",
@@ -136,6 +129,7 @@ class DayoneToGhost(object):
             }
         }
 
+        print "Imported " + str(post_id) + " journal entries and " + str(image_count) + " photos."
         return json.dumps(export_object)
 
 
