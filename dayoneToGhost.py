@@ -90,6 +90,17 @@ class DayoneToGhost(object):
             # Convert timestamp to string
             timestamp = time.strftime("%Y-%m-%dT%H:%M:%S", timestamp)
 
+            # Test if entry is starred in order to make it an featured post
+            featured = 0
+
+            try:
+                pl["Starred"]
+                if not pl["Starred"]:
+                    featured = 0
+                else:
+                    featured = 1
+            except KeyError:
+                pl["Starred"] = []
 
             temp_post = {
                 "id": post_id,
@@ -98,7 +109,7 @@ class DayoneToGhost(object):
                 "markdown": markdown,
                 "html": html,
                 "image": ghost_img,
-                "featured": 0,
+                "featured": featured,
                 "page": 0,
                 "status": "published",
                 "language": "en_US",
