@@ -39,4 +39,4 @@ This will create an `dayone_export_<date>.json` file and a `content` directory w
 
 This are both things the Ghost data model doesn't support. Maybe I can fill this gap with the upcoming Ghost Apps... (or one of you clever guys have an idea ;) )!
 
-**Big thanks to [José Padilla](https://github.com/jpadilla) as my tool is based on his [tumblr-to-ghost](https://github.com/jpadilla/tumblr-to-ghost) exporting tool.**
+**Big thanks to [José Padilla](https://github.com/jpadilla) as my tool is based on his [tumblr-to-ghost](https://github.com/jpadilla/tumblr-to-ghost) export tool.**
