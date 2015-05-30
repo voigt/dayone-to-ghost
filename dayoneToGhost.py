@@ -1,6 +1,6 @@
 import pypandoc as pandoc
 import os, sys, shutil, subprocess, plistlib, glob, json, time
-from unidecode import unidecode
+
 
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
@@ -22,7 +22,7 @@ class DayoneToGhost(object):
         if os.path.isdir(pathToJournalDayone):
             print "DayOne path: " + pathToJournalDayone
 
-            f = open('dayone_export.json', 'w')
+            f = open('dayone_export.' + time.strftime("%Y-%m-%d") + '.json', 'w')
             f.write(self.create_ghost_export(pathToJournalDayone))
         else:
             print "Path is not a directory"
@@ -70,8 +70,15 @@ class DayoneToGhost(object):
                 ghost_img = "/" + ghost_img_dir + image_name
                 image_count += 1
 
-            markdown = pl["Entry Text"].encode('ascii', 'xmlcharrefreplace')
-            html = pandoc.convert(markdown, 'html', format='md').encode('ascii', 'xmlcharrefreplace')
+            markdown = pl["Entry Text"]
+            markdown.encode('utf-8', 'xmlcharrefreplace')
+
+            try:
+                html = pandoc.convert(markdown, 'html', format='md')
+#                html.encode('ascii', 'xmlcharrefreplace')
+            except:
+                print "Issue with following entry:"
+                print markdown
 
 
             # t.b.d
