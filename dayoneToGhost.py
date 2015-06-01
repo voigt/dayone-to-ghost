@@ -41,7 +41,7 @@ class DayoneToGhost(object):
         
         for entry in entries:
             post_id += 1
-
+            dayone_tags = []
 
             pl = plistlib.readPlist(entry)
 
@@ -88,9 +88,8 @@ class DayoneToGhost(object):
                 pl["Tags"] = []
 
             dayone_tags.extend(pl["Tags"])
-            new_tags = self.create_tags(set(dayone_tags))
+            post_tags = self.create_tags(set(dayone_tags))
 
-            #title = time.strftime("%Y-%b-%dT%H:%M:%S", timestamp)
             title = time.strftime("%d. %b %Y", timestamp)
             slug = time.strftime("%Y-%m-%dT%H:%M:%S", timestamp)
 
@@ -112,7 +111,7 @@ class DayoneToGhost(object):
             temp_post = {
                 "id": post_id,
                 "title": title,
-                "slug": slug,#slug,
+                "slug": slug,
                 "markdown": markdown,
                 "html": html,
                 "image": ghost_img,
@@ -133,7 +132,7 @@ class DayoneToGhost(object):
 
             ghost_posts.append(temp_post)
 
-            self.create_post_tags(temp_post, new_tags)
+            self.create_post_tags(temp_post, post_tags)
 
         export_object = {
             "meta": {
@@ -152,11 +151,18 @@ class DayoneToGhost(object):
 
 
     def create_tags(self, dayone_tags):
-        ghost_tags =[]
-        tag_id = self.ghost_tags[-1]['id'] if len(self.ghost_tags) > 0 else 0
+        post_tags =[]
+        if len(self.ghost_tags) > 0:
+            tag_id = self.ghost_tags[-1]['id']
+        else:
+            tag_id = 0
 
         for tag in dayone_tags:
             tag_slug = '-'.join(tag.lower().strip(',').split(' '))
+
+            # if tag is not already known, create it and add it to
+            # already known tags,ghost_tags ans current posts tags
+            # else just add it to current posts tags
             if tag_slug not in self.used_tags:
                 now = int(time.time()) * 1000
                 tag_id += 1
@@ -174,11 +180,17 @@ class DayoneToGhost(object):
                     "updated_at": now,
                     "updated_by": 1
                 }
-                ghost_tags.append(temp_tag)
+                post_tags.append(temp_tag)
                 self.ghost_tags.append(temp_tag)
                 self.used_tags.append(tag_slug)
+            else:
+                # get the whole dataset of the already known tag
+                # and add it to current posts tags
+                for l in self.ghost_tags:
+                    if l['slug'] ==  tag_slug:
+                        post_tags.append(l)
 
-        return ghost_tags
+        return post_tags
 
     def create_post_tags(self, post, tags):
 
