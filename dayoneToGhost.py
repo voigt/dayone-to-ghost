@@ -1,5 +1,12 @@
+import os
+import sys
+import shutil
+import subprocess
+import plistlib
+import glob
+import json
+import time
 import pypandoc as pandoc
-import os, sys, shutil, subprocess, plistlib, glob, json, time
 
 
 def date_handler(obj):
@@ -28,7 +35,7 @@ class DayoneToGhost(object):
             print "Path is not a directory"
 
     def create_ghost_export(self, pathToJournalDayone):
-        
+
         entries_dir = pathToJournalDayone + "/entries/"
         photos_dir  = pathToJournalDayone + "/photos/"
 
@@ -38,7 +45,7 @@ class DayoneToGhost(object):
         image_count = 0
 
         entries = glob.glob(entries_dir + "*.doentry")
-        
+
         for entry in entries:
             post_id += 1
             dayone_tags = []
@@ -75,7 +82,6 @@ class DayoneToGhost(object):
 
             try:
                 html = pandoc.convert(markdown, 'html', format='md')
-#                html.encode('ascii', 'xmlcharrefreplace')
             except:
                 print "Issue with following entry:"
                 print markdown
