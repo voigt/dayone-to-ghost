@@ -90,6 +90,8 @@ class DayoneToGhost(object):
             dayone_tags.extend(pl["Tags"])
             post_tags = self.create_tags(set(dayone_tags))
 
+            # the post title is set to the posts date
+            # a better/alternative solution wanted!
             title = time.strftime("%d. %b %Y", timestamp)
             slug = time.strftime("%Y-%m-%dT%H:%M:%S", timestamp)
 
